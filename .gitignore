@@ -43,3 +43,4 @@ testem.log
 Thumbs.db
 
 /worker/node_modules
+worker/dist/*

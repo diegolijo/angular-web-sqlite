@@ -5,7 +5,7 @@
  ** is an amalgamation of JavaScript source code from two projects:
  **
  ** 1) https://emscripten.org: the Emscripten "glue code" is covered by
- **    the terms of the MIT license and University of Illinois/NCSA
+ **    the terms of  the MIT license and University of Illinois/NCSA
  **    Open Source License, as described at:
  **
  **    https://emscripten.org/docs/introducing_emscripten/emscripten_license.html
