@@ -6,5 +6,7 @@
   ],
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": ["@sqlite.org/sqlite-wasm"],
+  "keepLifecycleScripts": true
 }

@@ -36,9 +36,7 @@ fs.readFile(angularJsonPath, 'utf8', function (err, data) {
     var existingAssets = angularJson.projects.app.architect.build.options.assets || [];
     newAssets.forEach(function (newAsset) {
         var exists = existingAssets.some(function (existingAsset) {
-            existingAsset.glob === newAsset.glob &&
-                existingAsset.input === newAsset.input &&
-                existingAsset.output === newAsset.output
+            return existingAsset.glob === newAsset.glob && existingAsset.input === newAsset.input && existingAsset.output === newAsset.output;
         });
 
         if (!exists) {

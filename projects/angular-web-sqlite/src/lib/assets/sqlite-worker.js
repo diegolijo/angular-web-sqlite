@@ -14228,6 +14228,9 @@ self.onmessage = (messageEvent) => __awaiter(void 0, void 0, void 0, function* (
     }
     if (sqliteMessage.type === 'executeSql') {
         try {
+            if (!db) {
+                throw new Error('Inicia la base de datos antes de realizar consultas');
+            }
             const values = [];
             db.exec({
                 sql: sqliteMessage.sql,
@@ -14248,6 +14251,9 @@ self.onmessage = (messageEvent) => __awaiter(void 0, void 0, void 0, function* (
     }
     if (sqliteMessage.type === 'batchSql') {
         try {
+            if (!db) {
+                throw new Error('Inicia la base de datos antes de realizar consultas');
+            }
             db.exec('BEGIN TRANSACTION');
             let changes = 0;
             sqliteMessage.sqls.forEach(([sql, param]) => {

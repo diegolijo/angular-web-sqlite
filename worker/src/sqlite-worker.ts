@@ -44,6 +44,9 @@ self.onmessage = async (messageEvent: MessageEvent) => {
   /*********************   EXECUTE_SQL  *********************/
   if (sqliteMessage.type === 'executeSql') {
     try {
+      if (!db) {
+        throw new Error('Inicia la base de datos antes de realizar consultas');
+      }
       const values: any = [];
       db.exec({
         sql: sqliteMessage.sql,
@@ -64,6 +67,9 @@ self.onmessage = async (messageEvent: MessageEvent) => {
   /************************ BATCH ************************/
   if (sqliteMessage.type === 'batchSql') {
     try {
+      if (!db) {
+        throw new Error('Inicia la base de datos antes de realizar consultas');
+      }
       db.exec('BEGIN TRANSACTION');
       let changes = 0;
       sqliteMessage.sqls.forEach(([sql, param]) => {
