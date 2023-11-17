@@ -20,9 +20,9 @@ export interface Message {
 
 
 @Injectable()
-export class SpeechToText {
+export class WebSqlite {
 
-  private sqliteClientWorkerPath = './assets/sqlite-worker.js'; //TODO
+  private sqliteClientWorkerPath = 'assets/sqlite-worker.js'; //TODO
   private worker!: Worker;
   private queuedPromises: any = {};
 

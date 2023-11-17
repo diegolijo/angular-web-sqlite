@@ -16,5 +16,20 @@ export default [
         preferBuiltins: true,
       }),
     ]
+  },
+  {
+    input: 'src/copyAssets.js',
+    output: {
+      dir: 'dist/bundle',
+      format: 'esm',
+      exports: 'auto',
+      compact: true,
+    },
+    plugins: [
+      json(),
+      nodeResolve({
+        preferBuiltins: true,
+      }),
+    ]
   }
 ];

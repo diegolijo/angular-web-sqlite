@@ -1,4 +1,4 @@
-# AngularSpeechToText
+# AngularWebSqlite
 
 # instalar herramienta transpilación de la librería
 - npm i ng-packagr

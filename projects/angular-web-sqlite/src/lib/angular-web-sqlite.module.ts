@@ -8,4 +8,4 @@ import { AngularWebSqliteComponent } from './angular-web-sqlite.component';
   imports: [],
   exports: [AngularWebSqliteComponent]
 })
-export class AngularSpeechToTextModule { }
+export class AngularWebSqliteModule { }

@@ -106,23 +106,23 @@
         }
       }
     },
-    "angular-speech-to-text": {
+    "angular-web-sqlite": {
       "projectType": "library",
-      "root": "projects/angular-speech-to-text",
-      "sourceRoot": "projects/angular-speech-to-text/src",
+      "root": "projects/angular-web-sqlite",
+      "sourceRoot": "projects/angular-web-sqlite/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/angular-speech-to-text/ng-package.json"
+            "project": "projects/angular-web-sqlite/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/angular-speech-to-text/tsconfig.lib.prod.json"
+              "tsConfig": "projects/angular-web-sqlite/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/angular-speech-to-text/tsconfig.lib.json"
+              "tsConfig": "projects/angular-web-sqlite/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -130,9 +130,9 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/angular-speech-to-text/src/test.ts",
-            "tsConfig": "projects/angular-speech-to-text/tsconfig.spec.json",
-            "karmaConfig": "projects/angular-speech-to-text/karma.conf.js"
+            "main": "projects/angular-web-sqlite/src/test.ts",
+            "tsConfig": "projects/angular-web-sqlite/tsconfig.spec.json",
+            "karmaConfig": "projects/angular-web-sqlite/karma.conf.js"
           }
         }
       }

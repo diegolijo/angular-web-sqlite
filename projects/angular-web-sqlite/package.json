@@ -3,12 +3,17 @@
   "author": "Diego Santiago",
   "version": "1.0.0",
   "license": "MIT",
+  "scripts": {
+    "postinstall": "node node_modules/angular-web-sqlite/src/angular-assets.js"
+  },
+
   "peerDependencies": {
     "@angular/common": "13.x || 14.x || 15.x || 16.x",
     "@angular/core": "13.x || 14.x || 15.x || 16.x",
     "@ionic/angular": "6.x || 5.x",
     "rxjs": "^7.8.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "@sqlite.org/sqlite-wasm": "^3.44.0-build2"
   },
   "dependencies": {
     "tslib": "^2.6.2"
