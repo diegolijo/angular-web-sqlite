@@ -1,7 +1,12 @@
 # angular-web-sqlite
 
-angular-web-sqlite is an Angular library that provides a convenient interface for interacting with SQLite databases in web applications. 
-It allows you to perform SQL operations such as initialization, executing queries, and handling transactions seamlessly within your Angular project.
+angular-web-sqlite is an Angular service that wraps the @sqlite.org/sqlite-wasm module. 
+This Angular service takes care of the declaration and communication with a web worker, essential for utilizing the Origin Private File System (OPFS) storage back-end.
+
+You only need to set the following headers on your server:
+
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp
 
 ## Installation
 
@@ -54,12 +59,6 @@ export class YourService {
   }
 }
 ```
-
-Warning Your server must set the following Http headers when serving your files
-
-Cross-Origin-Opener-Policy: same-origin
-
-Cross-Origin-Embedder-Policy: require-corp
 
 ## Angular Configuration
 Make sure to update your angular.json file to include the necessary configurations for the library assets. The following additions should be made to the assets section:
