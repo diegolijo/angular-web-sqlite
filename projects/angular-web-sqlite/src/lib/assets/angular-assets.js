@@ -10,7 +10,7 @@ var newAssets = [
         "output": "./sqlite-client/"
     },
     {
-        "glob": "**/*.js",
+        "glob": "**/*",
         "input": "./node_modules/@sqlite.org/sqlite-wasm/sqlite-wasm/jswasm/",
         "output": "./sqlite-client/"
     }
@@ -32,8 +32,22 @@ fs.readFile(angularJsonPath, 'utf8', function (err, data) {
         return;
     }
 
-    // Agrega los nuevos objetos a la clave 'assets'
-    angularJson.projects.app.architect.build.options.assets = angularJson.projects.app.architect.build.options.assets.concat(newAssets);
+    // Verifica si las nuevas claves ya existen antes de agregarlas
+    var existingAssets = angularJson.projects.app.architect.build.options.assets || [];
+    newAssets.forEach(function (newAsset) {
+        var exists = existingAssets.some(function (existingAsset) {
+            existingAsset.glob === newAsset.glob &&
+                existingAsset.input === newAsset.input &&
+                existingAsset.output === newAsset.output
+        });
+
+        if (!exists) {
+            existingAssets.push(newAsset);
+        }
+    });
+
+    // Actualiza la clave 'assets'
+    angularJson.projects.app.architect.build.options.assets = existingAssets;
 
 
     // Escribe el contenido modificado de vuelta al archivo angular.json
