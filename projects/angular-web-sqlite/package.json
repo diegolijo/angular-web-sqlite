@@ -1,7 +1,7 @@
 {
   "name": "angular-web-sqlite",
-  "author": "Diego Santiago",
-  "version": "1.0.9",
+  "author": "Diego Santiago Lijó",
+  "version": "1.0.13",
   "license": "MIT",
   "scripts": {
     "postinstall": "cd src && cd lib && cd assets && node angular-assets.js"

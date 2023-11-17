@@ -31,6 +31,9 @@ self.onmessage = async (messageEvent: MessageEvent) => {
       printErr: error,
     }).then((sqlite3) => {
       try {
+        if (db) {
+          return sqliteMessage.db = 'La base de datos ya ha sido iniciada';
+        }
         db = new sqlite3.oo1.OpfsDb(sqliteMessage.filename, sqliteMessage.flags);
         sqliteMessage.db = db.filename;
       } catch (err) {
