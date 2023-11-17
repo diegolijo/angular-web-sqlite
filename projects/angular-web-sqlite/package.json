@@ -4,9 +4,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "postinstall": "node node_modules/angular-web-sqlite/src/angular-assets.js"
+    "postinstall": "node node_modules/angular-web-sqlite/src/lib/assets/angular-assets.js"
   },
-
   "peerDependencies": {
     "@angular/common": "13.x || 14.x || 15.x || 16.x",
     "@angular/core": "13.x || 14.x || 15.x || 16.x",

@@ -18,8 +18,9 @@ export interface Message {
   rowsAffected?: number;
 }
 
-
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class WebSqlite {
 
   private sqliteClientWorkerPath = 'assets/sqlite-worker.js'; //TODO
