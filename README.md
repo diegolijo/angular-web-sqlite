@@ -15,3 +15,13 @@ uso:
   # generar la librería
 - ng generate library nombre-librería  
   genera -> ./projects/nombre-librería
+
+ falta
+ 
+ -  pegar en el package.json final;
+ 
+  "scripts": {
+    "postinstall": "node src/lib/assets/angular-assets.js"
+  },
+
+- aumentar la versión

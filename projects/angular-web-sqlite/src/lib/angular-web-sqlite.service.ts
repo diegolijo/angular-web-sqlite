@@ -23,7 +23,7 @@ export interface Message {
 })
 export class WebSqlite {
 
-  private sqliteClientWorkerPath = 'assets/sqlite-worker.js'; //TODO
+  private sqliteClientWorkerPath = 'sqlite-client/sqlite-worker.js';
   private worker!: Worker;
   private queuedPromises: any = {};
 

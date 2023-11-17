@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-var angularJsonPath = './angular.json'; // Ruta al archivo angular.json
+var angularJsonPath = '../../../../../angular.json';
 
 // Nuevos objetos que deseas agregar a la clave assets
 var newAssets = [
@@ -10,7 +10,7 @@ var newAssets = [
         "output": "./sqlite-client/"
     },
     {
-        "glob": "**/*",
+        "glob": "**/*.js",
         "input": "./node_modules/@sqlite.org/sqlite-wasm/sqlite-wasm/jswasm/",
         "output": "./sqlite-client/"
     }
