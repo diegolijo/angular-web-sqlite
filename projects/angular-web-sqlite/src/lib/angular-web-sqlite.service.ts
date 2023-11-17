@@ -26,6 +26,7 @@ export class WebSqlite {
   private sqliteClientWorkerPath = 'sqlite-client/sqlite-worker.js';
   private worker!: Worker;
   private queuedPromises: any = {};
+  private isInitialized!: boolean;
 
 
   constructor(
@@ -33,7 +34,6 @@ export class WebSqlite {
 
 
   init(dbName: string) {
-
     this.worker = new Worker(this.sqliteClientWorkerPath, { type: 'module' });
     this.worker.onmessage = this.messageReceived.bind(this);
     const initDb: Message = { type: 'init', filename: `/${dbName}.sqlite3`, flags: 'ct', id: this.generateGuid() };
@@ -46,8 +46,8 @@ export class WebSqlite {
     });
   }
 
-
-  public executeSql(sql: string, params: any) {
+  public async executeSql(sql: string, params: any) {
+    await this.waitForInitialization();
     const executeSql: Message =
       { type: 'executeSql', sql: sql, param: params, id: this.generateGuid() };
     this.worker.postMessage(executeSql);
@@ -57,13 +57,13 @@ export class WebSqlite {
         reject
       };
     });
-
   }
 
   /**
    * Funcion para transacciones sin return
    */
-  batchSql(sqls: any) {
+  public async batchSql(sqls: any) {
+    await this.waitForInitialization();
     const batchSql: Message =
       { type: 'batchSql', sqls: sqls, id: this.generateGuid() };
     this.worker.postMessage(batchSql);
@@ -104,12 +104,18 @@ export class WebSqlite {
           if (sqliteMessage.error) {
             return promise.reject(sqliteMessage.error);
           }
+          this.isInitialized = true;
           return promise.resolve(sqliteMessage.filename);
       }
     }
   }
 
-
+  private async waitForInitialization() {
+    while (!this.isInitialized) {
+      console.log('esperando inicialización...');
+      await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 100 milliseconds before checking again
+    }
+  }
 
   private generateGuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {

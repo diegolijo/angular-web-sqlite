@@ -17,6 +17,7 @@ interface ISqliteData {
   rowsAffected: number;
 }
 
+let init;
 let db: Database;
 const log = (...args) => console.log(...args);
 const error = (...args) => console.error(...args);
@@ -26,14 +27,15 @@ self.onmessage = async (messageEvent: MessageEvent) => {
 
   /**************************** INIT ************************/
   if (sqliteMessage.type === 'init') {
+    if (init) {
+      return sqliteMessage.db = 'La base de datos ya ha sido iniciada';
+    }
+    init = true;
     sqlite3InitModule({
       print: log,
       printErr: error,
     }).then((sqlite3) => {
       try {
-        if (db) {
-          return sqliteMessage.db = 'La base de datos ya ha sido iniciada';
-        }
         db = new sqlite3.oo1.OpfsDb(sqliteMessage.filename, sqliteMessage.flags);
         sqliteMessage.db = db.filename;
       } catch (err) {

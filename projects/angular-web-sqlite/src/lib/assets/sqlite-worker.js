@@ -14204,20 +14204,22 @@ var sqlite3InitModule$1 = sqlite3InitModule;var __awaiter = (undefined && undefi
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+let init;
 let db;
 const log = (...args) => console.log(...args);
 const error = (...args) => console.error(...args);
 self.onmessage = (messageEvent) => __awaiter(void 0, void 0, void 0, function* () {
     const sqliteMessage = messageEvent.data;
     if (sqliteMessage.type === 'init') {
+        if (init) {
+            return sqliteMessage.db = 'La base de datos ya ha sido iniciada';
+        }
+        init = true;
         sqlite3InitModule$1({
             print: log,
             printErr: error,
         }).then((sqlite3) => {
             try {
-                if (db) {
-                    return sqliteMessage.db = 'La base de datos ya ha sido iniciada';
-                }
                 db = new sqlite3.oo1.OpfsDb(sqliteMessage.filename, sqliteMessage.flags);
                 sqliteMessage.db = db.filename;
             }
