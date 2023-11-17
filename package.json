@@ -1,15 +1,15 @@
 {
   "name": "my-project",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "worker-pack": "cd worker && npm run build && npm run bundle && cd ..",
-    "build:lib": "ng-packagr -p projects/angular-web-sqlite/ng-package.json",
-    "publish": "npm run build:lib && cd dist/angular-web-sqlite && npm publish && cd.. && cd.."
+    "worker-pack": "cd worker && npm run build && npm run bundle && cd src && node moveFolder.js && cd ..",
+    "build:lib": "ng-packagr -p projects/angular-web-sqlite/ng-package.json &&  npm run worker-pack",
+    "publish": "cd dist/angular-web-sqlite && npm publish && cd.. && cd.."
   },
   "private": true,
   "dependencies": {
@@ -22,16 +22,28 @@
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
     "@ionic/angular": "^6.0.5",
+    "publish": "^0.6.0",
     "rxjs": "~7.4.0",
+    "shelljs": "^0.8.5",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~13.1.3",
+    "@angular-eslint/builder": "^13.0.1",
+    "@angular-eslint/eslint-plugin": "^13.0.1",
+    "@angular-eslint/eslint-plugin-template": "^13.0.1",
+    "@angular-eslint/template-parser": "^13.0.1",
     "@angular/cli": "~13.1.3",
     "@angular/compiler-cli": "~13.1.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
+    "@typescript-eslint/eslint-plugin": "4.16.1",
+    "@typescript-eslint/parser": "4.16.1",
+    "eslint": "^7.6.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-jsdoc": "30.7.6",
+    "eslint-plugin-prefer-arrow": "1.2.2",
     "jasmine-core": "~3.10.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
@@ -39,16 +51,6 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "ng-packagr": "^13.2.1",
-    "typescript": "~4.5.2",
-    "eslint": "^7.6.0",
-    "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-jsdoc": "30.7.6",
-    "eslint-plugin-prefer-arrow": "1.2.2",
-    "@typescript-eslint/eslint-plugin": "4.16.1",
-    "@typescript-eslint/parser": "4.16.1",
-    "@angular-eslint/builder": "^13.0.1",
-    "@angular-eslint/eslint-plugin": "^13.0.1",
-    "@angular-eslint/eslint-plugin-template": "^13.0.1",
-    "@angular-eslint/template-parser": "^13.0.1"
+    "typescript": "~4.5.2"
   }
 }
