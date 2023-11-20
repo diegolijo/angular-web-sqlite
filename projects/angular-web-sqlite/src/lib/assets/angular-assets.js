@@ -19,6 +19,11 @@ var newAssets = [
   }
 ];
 
+var headers = {
+  "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Embedder-Policy": "require-corp"
+}
+
 // Lee el contenido actual del archivo angular.json
 fs.readFile(angularJsonPath, 'utf8', function (err, data) {
   if (err) {
@@ -57,10 +62,15 @@ fs.readFile(angularJsonPath, 'utf8', function (err, data) {
   // Actualiza la clave 'assets'
   angularJson.projects.app.architect.build.options.assets = existingAssets;
 
-  var servePath = angularJson.projects.app.architect.serve.options;
-  if (!servePath.proxyConfig) {
-    servePath.proxyConfig = "src/proxy.conf.js";
+  var serveOptionsPath = angularJson.projects.app.architect.serve.options;
+  if (!serveOptionsPath.headers) {
+    serveOptionsPath.headers = headers;
+  }else{
+    // TODO añadir a las claves existentes
   }
+
+  angularJson.projects.app.architect.serve.options = serveOptionsPath
+
 
   // Escribe el contenido modificado de vuelta al archivo angular.json
   fs.writeFile(angularJsonPath, JSON.stringify(angularJson, null, 2), function (err) {
@@ -70,25 +80,5 @@ fs.readFile(angularJsonPath, 'utf8', function (err, data) {
       console.log('Objetos agregados con éxito al archivo angular.json.');
     }
   });
-
-
-  // Obtén la ruta absoluta del archivo de origen
-  var absoluteSourcePath = path.resolve(proxyFilePath);
-
-
-  // Obtén la ruta absoluta de la carpeta de destino
-  var absoluteDestinationPath = path.resolve(projectPath);
-
-  console.log(absoluteDestinationPath);
-
-  // Verifica si el archivo de origen existe
-  if (fs.existsSync(absoluteDestinationPath)) {
-    // Mueve el archivo
-    fs.renameSync(absoluteSourcePath, path.join(absoluteDestinationPath, 'proxy.conf.js'));
-
-    console.log('Archivo movido exitosamente.');
-  } else {
-    console.error('El archivo de origen no existe.');
-  }
 
 });
