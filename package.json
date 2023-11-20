@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "worker-pack": "cd worker && npm run build && npm run bundle && cd src && node moveFolder.js && cd .. && cd ..",
+    "worker-pack": "cd worker && npm i && npm run build && npm run bundle && cd src && node moveFolder.js && cd .. && cd ..",
     "build:lib": "ng-packagr -p projects/angular-web-sqlite/ng-package.json",
     "publish": "cd dist/angular-web-sqlite && npm publish && cd.. && cd.."
   },
