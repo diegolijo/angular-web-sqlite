@@ -1,7 +1,7 @@
 {
   "name": "angular-web-sqlite",
   "author": "Diego Santiago Lijó",
-  "version": "1.0.17",
+  "version": "1.0.20",
   "license": "MIT",
   "scripts": {
     "postinstall": "cd src && cd lib && cd assets && node angular-assets.js"
@@ -9,9 +9,7 @@
    "peerDependencies": {
     "@angular/common": "13.x || 14.x || 15.x || 16.x",
     "@angular/core": "13.x || 14.x || 15.x || 16.x",
-    "@ionic/angular": "6.x || 5.x",
-    "rxjs": "^7.8.1",
-    "typescript": "^5.2.2"
+    "@ionic/angular": "6.x || 5.x"
   },
   "dependencies": {
     "tslib": "^2.6.2",
