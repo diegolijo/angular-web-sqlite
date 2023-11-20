@@ -3,11 +3,6 @@
 angular-web-sqlite is an Angular service that wraps the @sqlite.org/sqlite-wasm module. 
 This Angular service takes care of the declaration and communication with a web worker, essential for utilizing the Origin Private File System (OPFS) storage back-end.
 
-You only need to set the following headers on your server:
-
-Cross-Origin-Opener-Policy: same-origin
-Cross-Origin-Embedder-Policy: require-corp
-
 ## Installation
 
 Install the library using npm:
@@ -15,6 +10,54 @@ Install the library using npm:
 ```bash
 npm install angular-web-sqlite
 ``` 
+
+## Angular Configuration
+The installation of the module modifies the angular.json file to incorporate precompiled files.
+
+This setup guarantees that the essential assets—the SQLite working script (sqlite-worker.js) and files from the @sqlite.org/sqlite-wasm module, utilized by the library internally—are included in the output directory during the build process.
+
+Ensure that the 'sqlite-client' folder is copied to the project's output directory, www.
+
+```json
+  "projects": {
+    "app": {
+      ...
+      "architect": {
+        ...
+         "build": {
+          ...
+          "options": {
+            "assets": [
+              ...
+              {
+                "glob": "**/*.js",
+                "input": "./node_modules/angular-web-sqlite/src/lib/assets",
+                "output": "./sqlite-client/"
+              },
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@sqlite.org/sqlite-wasm/sqlite-wasm/jswasm/",
+                "output": "./sqlite-client/"
+              }
+            ]
+          }
+          ...
+       },
+        "serve": {
+          ...
+          "options": {
+            ...
+            "headers": {
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Cross-Origin-Embedder-Policy": "require-corp"
+            }
+          }
+       }
+      }
+    }
+   }
+   ```
+
 ## Methods
 
 ```typescript
@@ -24,7 +67,6 @@ executeSql(sql: string, params: any[]): Promise<any>            //Executes a sin
 
 batchSql(sqls: [index: number]: [string, any[]]): Promise<any>  //Executes a batch of SQL statements as a transaction.
 ```
-
 
 ## Usage
 
@@ -59,34 +101,3 @@ export class YourService {
   }
 }
 ```
-
-## Angular Configuration
-Make sure to update your angular.json file to include the necessary configurations for the library assets. The following additions should be made to the assets section:
-
-```json
-  "projects": {
-    "app": {
-      ...
-      "architect": {
-        ...
-        "options": {
-          "assets": [
-            ...
-            {
-              "glob": "**/*.js",
-              "input": "./node_modules/angular-web-sqlite/src/lib/assets",
-              "output": "./sqlite-client/"
-            },
-            {
-              "glob": "**/*",
-              "input": "./node_modules/@sqlite.org/sqlite-wasm/sqlite-wasm/jswasm/",
-              "output": "./sqlite-client/"
-            }
-          ]
-        }
-       }
-     }
-   }
-```
-
-This configuration ensures that the necessary assets—the SQLite working script (sqlite-worker.js) and the files from the @sqlite.org/sqlite-wasm module, which is used by the library under the hood—are copied to the output directory (www) during the build process.

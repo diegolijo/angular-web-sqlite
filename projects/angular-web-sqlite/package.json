@@ -1,10 +1,10 @@
 {
   "name": "angular-web-sqlite",
   "author": "Diego Santiago Lijó",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "license": "MIT",
   "scripts": {
-    "postinstall": "cd src && cd lib && cd assets && node angular-assets.js && cd .. && cd .. && cd .. && ng build --configuration=production"
+    "postinstall": "cd src && cd lib && cd assets && node copy-assets.js && cd .. && cd .. && cd .. && ng build --configuration=production"
   },
   "peerDependencies": {
     "@angular/common": "13.x || 14.x || 15.x || 16.x",
@@ -21,6 +21,7 @@
   },
   "keywords": [
     "angular",
-    "web-sqlite"
+    "sqlite",
+    "web"
   ]
 }
