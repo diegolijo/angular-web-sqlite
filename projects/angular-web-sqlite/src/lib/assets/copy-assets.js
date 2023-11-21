@@ -40,9 +40,7 @@ fs.readFile(angularJsonPath, 'utf8', function (err, data) {
     || !angularJson.projects.app.architect
     || !angularJson.projects.app.architect.build
     || !angularJson.projects.app.architect.build.options
-    || !angularJson.projects.app.architect.build.options.assets
-    || !angularJson.projects.app.architect.serve
-    || !angularJson.projects.app.architect.serve.options) {
+    || !angularJson.projects.app.architect.build.options.assets) {
     console.error('Estructura no válida en el archivo angular.json.');
     return;
   }
@@ -62,14 +60,16 @@ fs.readFile(angularJsonPath, 'utf8', function (err, data) {
   // Actualiza la clave 'assets'
   angularJson.projects.app.architect.build.options.assets = existingAssets;
 
-  var serveOptionsPath = angularJson.projects.app.architect.serve.options;
-  if (!serveOptionsPath.headers) {
-    serveOptionsPath.headers = headers;
-  }else{
+  var servePath = angularJson.projects.app.architect.serve;
+  if (!servePath.options) {
+    servePath.options = { headers: headers };
+  } else if (!servePath.options.headers) {
+    servePath.options.headers = headers;
+  } else {
     // TODO añadir a las claves existentes
   }
 
-  angularJson.projects.app.architect.serve.options = serveOptionsPath
+  angularJson.projects.app.architect.serve = servePath
 
 
   // Escribe el contenido modificado de vuelta al archivo angular.json
