@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable object-shorthand */
@@ -24,6 +25,18 @@ const error = (...args) => console.error(...args);
 
 self.onmessage = async (messageEvent: MessageEvent) => {
   const sqliteMessage = messageEvent.data as ISqliteData;
+
+  const stringifyParamObjects = (arr: (string | number)[]): void => {
+    for (let i = 0; i < arr.length; i++) {
+      if (typeof arr[i] !== 'number' && typeof arr[i] !== 'string') {
+        try {
+          arr[i] = JSON.stringify(arr[i]);
+        } catch (_) {
+          arr[i] = String(arr[i]);
+        }
+      }
+    }
+  };
 
   /**************************** INIT ************************/
   if (sqliteMessage.type === 'init') {
@@ -53,9 +66,13 @@ self.onmessage = async (messageEvent: MessageEvent) => {
         throw new Error('Inicia la base de datos antes de realizar consultas');
       }
       const values: any = [];
+      if (!sqliteMessage.param) {
+        sqliteMessage.param = [];
+      }
+      stringifyParamObjects(sqliteMessage.param);
       db.exec({
         sql: sqliteMessage.sql,
-        bind: sqliteMessage.param || [],
+        bind: sqliteMessage.param,
         rowMode: 'object',
         callback: (row) => {
           values.push(row);
@@ -79,9 +96,9 @@ self.onmessage = async (messageEvent: MessageEvent) => {
       let changes = 0;
       sqliteMessage.sqls.forEach(([sql, param]) => {
         if (!param) {
-          console.log(sql);
           param = [];
         }
+        stringifyParamObjects(param);
         db.exec({ sql: sql, bind: param });
         changes += db.changes();
       });
@@ -118,4 +135,6 @@ self.onmessage = async (messageEvent: MessageEvent) => {
       self.postMessage(sqliteMessage);
     }
   }
+
 };
+

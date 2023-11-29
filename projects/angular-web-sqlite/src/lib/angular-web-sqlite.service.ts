@@ -19,7 +19,7 @@ export interface Message {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root', // TODO Esto crea una nueva instancia del servicio en cada declaracón (private webSqlite: WebSqlite)!!
 })
 export class WebSqlite {
 

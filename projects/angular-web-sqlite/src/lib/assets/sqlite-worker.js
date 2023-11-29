@@ -14210,6 +14210,18 @@ const log = (...args) => console.log(...args);
 const error = (...args) => console.error(...args);
 self.onmessage = (messageEvent) => __awaiter(void 0, void 0, void 0, function* () {
     const sqliteMessage = messageEvent.data;
+    const stringifyParamObjects = (arr) => {
+        for (let i = 0; i < arr.length; i++) {
+            if (typeof arr[i] !== 'number' && typeof arr[i] !== 'string') {
+                try {
+                    arr[i] = JSON.stringify(arr[i]);
+                }
+                catch (_) {
+                    arr[i] = String(arr[i]);
+                }
+            }
+        }
+    };
     if (sqliteMessage.type === 'init') {
         if (init) {
             return sqliteMessage.db = 'La base de datos ya ha sido iniciada';
@@ -14266,6 +14278,7 @@ self.onmessage = (messageEvent) => __awaiter(void 0, void 0, void 0, function* (
                     console.log(sql);
                     param = [];
                 }
+                stringifyParamObjects(param);
                 db.exec({ sql: sql, bind: param });
                 changes += db.changes();
             });
