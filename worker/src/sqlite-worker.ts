@@ -18,8 +18,8 @@ interface ISqliteData {
   rowsAffected: number;
 }
 
-let init;
-let db: Database;
+const dbs: { [property: string]: Database } = {};
+
 const log = (...args) => console.log(...args);
 const error = (...args) => console.error(...args);
 
@@ -29,40 +29,39 @@ self.onmessage = async (messageEvent: MessageEvent) => {
   const stringifyParamObjects = (arr: (string | number)[]): void => {
     for (let i = 0; i < arr.length; i++) {
       if (typeof arr[i] !== 'number' && typeof arr[i] !== 'string') {
-        try {
-          arr[i] = JSON.stringify(arr[i]);
-        } catch (_) {
-          arr[i] = String(arr[i]);
-        }
+        arr[i] = String(arr[i]);
       }
     }
   };
 
   /**************************** INIT ************************/
   if (sqliteMessage.type === 'init') {
-    if (init) {
-      return sqliteMessage.db = 'La base de datos ya ha sido iniciada';
-    }
-    init = true;
-    sqlite3InitModule({
-      print: log,
-      printErr: error,
-    }).then((sqlite3) => {
-      try {
-        db = new sqlite3.oo1.OpfsDb(sqliteMessage.filename, sqliteMessage.flags);
-        sqliteMessage.db = db.filename;
-      } catch (err) {
-        sqliteMessage.error = err;
-      } finally {
-        self.postMessage(sqliteMessage);
+    try {
+      if (dbs[sqliteMessage.filename]) {
+        throw new Error('La base de datos ya ha sido iniciada');
       }
-    });
+      sqlite3InitModule({
+        print: log,
+        printErr: error,
+      }).then((sqlite3) => {
+        try {
+          dbs[sqliteMessage.filename] = new sqlite3.oo1.OpfsDb(sqliteMessage.filename, sqliteMessage.flags);
+        } catch (err) {
+          sqliteMessage.error = err;
+        } finally {
+          self.postMessage(sqliteMessage);
+        }
+      });
+    } catch (err) {
+      sqliteMessage.error = err;
+      self.postMessage(sqliteMessage);
+    }
   }
 
   /*********************   EXECUTE_SQL  *********************/
   if (sqliteMessage.type === 'executeSql') {
     try {
-      if (!db) {
+      if (!dbs[sqliteMessage.filename]) {
         throw new Error('Inicia la base de datos antes de realizar consultas');
       }
       const values: any = [];
@@ -70,7 +69,7 @@ self.onmessage = async (messageEvent: MessageEvent) => {
         sqliteMessage.param = [];
       }
       stringifyParamObjects(sqliteMessage.param);
-      db.exec({
+      dbs[sqliteMessage.filename].exec({
         sql: sqliteMessage.sql,
         bind: sqliteMessage.param,
         rowMode: 'object',
@@ -89,20 +88,20 @@ self.onmessage = async (messageEvent: MessageEvent) => {
   /************************ BATCH ************************/
   if (sqliteMessage.type === 'batchSql') {
     try {
-      if (!db) {
+      if (!dbs[sqliteMessage.filename]) {
         throw new Error('Inicia la base de datos antes de realizar consultas');
       }
-      db.exec('BEGIN TRANSACTION');
+      dbs[sqliteMessage.filename].exec('BEGIN TRANSACTION');
       let changes = 0;
       sqliteMessage.sqls.forEach(([sql, param]) => {
         if (!param) {
           param = [];
         }
         stringifyParamObjects(param);
-        db.exec({ sql: sql, bind: param });
-        changes += db.changes();
+        dbs[sqliteMessage.filename].exec({ sql: sql, bind: param });
+        changes += dbs[sqliteMessage.filename].changes();
       });
-      db.exec('COMMIT');
+      dbs[sqliteMessage.filename].exec('COMMIT');
       sqliteMessage.rowsAffected = changes;
       /*
       let changes = 0;
@@ -129,7 +128,7 @@ self.onmessage = async (messageEvent: MessageEvent) => {
         changes += db.changes();
       }); */
     } catch (e) {
-      db.exec('ROLLBACK');
+      dbs[sqliteMessage.filename].exec('ROLLBACK');
       sqliteMessage.error = e;
     } finally {
       self.postMessage(sqliteMessage);

@@ -18,25 +18,23 @@ export interface Message {
   rowsAffected?: number;
 }
 
-@Injectable({
-  providedIn: 'root', // TODO Esto crea una nueva instancia del servicio en cada declaracón (private webSqlite: WebSqlite)!!
-})
+@Injectable()
 export class WebSqlite {
 
   private sqliteClientWorkerPath = 'sqlite-client/sqlite-worker.js';
   private worker!: Worker;
   private queuedPromises: any = {};
   private isInitialized!: boolean;
-
+  private filename!: string;
 
   constructor(
   ) { }
 
-
-  init(dbName: string) {
+  init(dbName: string, flags?: string) {
     this.worker = new Worker(this.sqliteClientWorkerPath, { type: 'module' });
     this.worker.onmessage = this.messageReceived.bind(this);
-    const initDb: Message = { type: 'init', filename: `/${dbName}.sqlite3`, flags: 'ct', id: this.generateGuid() };
+    this.filename = `/${dbName}.sqlite3`;
+    const initDb: Message = { type: 'init', filename: this.filename, flags: flags || 'ct', id: this.generateGuid() };
     this.worker.postMessage(initDb);
     return new Promise<any>((resolve, reject) => {
       this.queuedPromises[initDb.id] = {
@@ -49,7 +47,7 @@ export class WebSqlite {
   public async executeSql(sql: string, params: any) {
     await this.waitForInitialization();
     const executeSql: Message =
-      { type: 'executeSql', sql: sql, param: params, id: this.generateGuid() };
+      { type: 'executeSql', sql: sql, filename: this.filename, param: params, id: this.generateGuid() };
     this.worker.postMessage(executeSql);
     return new Promise<any>((resolve, reject) => {
       this.queuedPromises[executeSql.id] = {
@@ -65,7 +63,7 @@ export class WebSqlite {
   public async batchSql(sqls: any) {
     await this.waitForInitialization();
     const batchSql: Message =
-      { type: 'batchSql', sqls: sqls, id: this.generateGuid() };
+      { type: 'batchSql', sqls: sqls, filename: this.filename, id: this.generateGuid() };
     this.worker.postMessage(batchSql);
     return new Promise<any>((resolve, reject) => {
       this.queuedPromises[batchSql.id] = {
@@ -83,29 +81,33 @@ export class WebSqlite {
   }
 
 
-
   private messageReceived(message: MessageEvent) {
     const sqliteMessage: Message = message.data;
     if (sqliteMessage.id && this.queuedPromises.hasOwnProperty(sqliteMessage.id)) {
       const promise = this.queuedPromises[sqliteMessage.id];
       delete this.queuedPromises[sqliteMessage.id];
       switch (sqliteMessage.type) {
-        case 'batchSql':
-          if (sqliteMessage.error) {
-            return promise.reject(sqliteMessage.error);
-          }
-          return promise.resolve({ rowsAffected: sqliteMessage.rowsAffected });
-        case 'executeSql' || 'batchReturnSql':
-          if (sqliteMessage.error) {
-            return promise.reject(sqliteMessage.error);
-          }
-          return promise.resolve({ rows: sqliteMessage.rows });
         case 'init':
           if (sqliteMessage.error) {
             return promise.reject(sqliteMessage.error);
           }
           this.isInitialized = true;
           return promise.resolve(sqliteMessage.filename);
+        case 'executeSql':
+          if (sqliteMessage.error) {
+            return promise.reject(sqliteMessage.error);
+          }
+          return promise.resolve({ rows: sqliteMessage.rows });
+        case 'batchSql':
+          if (sqliteMessage.error) {
+            return promise.reject(sqliteMessage.error);
+          }
+          return promise.resolve({ rowsAffected: sqliteMessage.rowsAffected });
+        case 'batchReturnSql':
+          if (sqliteMessage.error) {
+            return promise.reject(sqliteMessage.error);
+          }
+          return promise.resolve({ rows: sqliteMessage.rows });
       }
     }
   }
