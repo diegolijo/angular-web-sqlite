@@ -34,19 +34,29 @@ fs.readFile(angularJsonPath, 'utf8', function (err, data) {
   // Parsea el contenido JSON
   var angularJson = JSON.parse(data);
 
+  // Obtén el nombre del proyecto (clave primera o específica) dentro de projects
+  var projectKeys = Object.keys(angularJson.projects);
+  if (projectKeys.length === 0) {
+    console.error('No se encontraron proyectos en el archivo angular.json.');
+    return;
+  }
+
+  // Se asume que el primer proyecto es el que queremos modificar en este caso específico
+  var projectName = projectKeys[0];
+  var project = angularJson.projects[projectName];
+
   // Asegúrate de que la clave 'assets' exista en la configuración de la arquitectura de construcción
-  if (!angularJson.projects
-    || !angularJson.projects.app
-    || !angularJson.projects.app.architect
-    || !angularJson.projects.app.architect.build
-    || !angularJson.projects.app.architect.build.options
-    || !angularJson.projects.app.architect.build.options.assets) {
+  if (!project
+    || !project.architect
+    || !project.architect.build
+    || !project.architect.build.options
+    || !project.architect.build.options.assets) {
     console.error('Estructura no válida en el archivo angular.json.');
     return;
   }
 
   // Verifica si las nuevas claves ya existen antes de agregarlas
-  var existingAssets = angularJson.projects.app.architect.build.options.assets || [];
+  var existingAssets = project.architect.build.options.assets || [];
   newAssets.forEach(function (newAsset) {
     var exists = existingAssets.some(function (existingAsset) {
       return existingAsset.glob === newAsset.glob && existingAsset.input === newAsset.input && existingAsset.output === newAsset.output;
@@ -58,19 +68,17 @@ fs.readFile(angularJsonPath, 'utf8', function (err, data) {
   });
 
   // Actualiza la clave 'assets'
-  angularJson.projects.app.architect.build.options.assets = existingAssets;
+  project.architect.build.options.assets = existingAssets;
 
-  var servePath = angularJson.projects.app.architect.serve;
-  if (!servePath.options) {
-    servePath.options = { headers: headers };
-  } else if (!servePath.options.headers) {
-    servePath.options.headers = headers;
+  if (!project.architect.serve.options) {
+    project.architect.serve.options = { headers: headers };
+  } else if (!project.architect.serve.options.headers) {
+    project.architect.serve.options.headers = headers;
   } else {
     // TODO añadir a las claves existentes
   }
 
-  angularJson.projects.app.architect.serve = servePath
-
+  angularJson.projects[projectName] = project;
 
   // Escribe el contenido modificado de vuelta al archivo angular.json
   fs.writeFile(angularJsonPath, JSON.stringify(angularJson, null, 2), function (err) {

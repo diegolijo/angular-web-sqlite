@@ -11,7 +11,6 @@
     "build:lib": "ng-packagr -p projects/angular-web-sqlite/ng-package.json",
     "publish": "cd dist/angular-web-sqlite && npm publish && cd.. && cd.."
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "~13.1.0",
     "@angular/common": "~13.1.0",
