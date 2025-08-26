@@ -3,7 +3,14 @@
 angular-web-sqlite is an Angular service that wraps the @sqlite.org/sqlite-wasm module. 
 This Angular service takes care of the declaration and communication with a web worker, essential for utilizing the Origin Private File System (OPFS) storage back-end.
 
-## Installation
+## build
+
+```bash
+npm run worker-pack 
+
+npm run build:lib
+``` 
+## lib Installation
 
 Install the library using npm:
 

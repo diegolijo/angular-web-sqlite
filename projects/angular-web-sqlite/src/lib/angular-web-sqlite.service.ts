@@ -1,8 +1,7 @@
 /* eslint-disable one-var */
 /* eslint-disable no-bitwise */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable object-shorthand */
-/* eslint-disable @typescript-eslint/naming-convention */
+import '@angular/compiler';
 import { Injectable } from '@angular/core';
 
 export interface Message {
